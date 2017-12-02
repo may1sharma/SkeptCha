@@ -9,11 +9,20 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 	<title>SkeptCha: Login </title>
 	<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
 	<link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="drawCanvas.js"></script>
+    <script type="text/javascript" src="viewCanvas.js"></script>
+    <script type="text/javascript">
+        function start(){
+            initViewer()
+            initDrawing()
+            //
+        }
+    </script>
 
   
 </head>
 
-<body>
+<body onload="start()">
 	<div class="wrapper">
 	<form class="form-signin">       
 	  <h2 class="form-signin-heading">Please login</h2>
@@ -22,9 +31,29 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 	  <label class="checkbox">
 	    <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
 	  </label>
+    <div>
+        <p>Please draw the given image :) </p>
+    </div>
+     <div>
+      <canvas id="drawCanvas" class="canvaslook" width="200" height="200" ></canvas>
+    </div>
+        
+    <div>
+      <canvas id="viewCanvas" class="canvasView" width="200" height="200" ></canvas>
+    </div>
+        <!-- Buttons Section -->
+    <div>
+      <input type="submit" value="Clear" class="elementlook" onclick="clearButton(drawCanvas, drawContext);">
+      <input type="submit" value="Undo" class="elementlook" onclick="undoButton(drawCanvas, drawContext);">
+    <input type="submit" value="reCaptCha" class="elementlook" onclick="">
+      <input type="submit" value="Validate" class="elementlook" onclick="validateSkeptCha();">
+    </div>
+
 	  <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>   
 	</form>
 	</div>
+    
+   
 
 
 <script type="text/javascript">
@@ -40,8 +69,12 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 			return v.toString(16);
 		});
 	}
-
-
+    
+    function validateSkeptCha(){
+        console.log("sketch validated")
+        return true
+    }
+    
 </script>
   
 </body>
