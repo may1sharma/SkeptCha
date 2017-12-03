@@ -5,10 +5,10 @@ var ShortStraw = {
 
     var strokes = sketch.strokes;
     var sketchCorners = [];
-      console.log(sketch)
+      //console.log(sketch)
     for (var i = 0; i < strokes.length; i++) {
       var points = strokes[i].points;
-      console.log("current stroke id is: " + i);
+      //console.log("current stroke id is: " + i);
       var strokeCorners = this.findShortStrawCorners(points);
       sketchCorners.push(strokeCorners);
     }
@@ -68,26 +68,26 @@ var ShortStraw = {
         // add the corner index of local cluster to the corner indices array
         // note: need to add W to offset between the straw indices and point indices
 //        var pointInd = localMinIndex + this.W;
-//          console.log("corner index is ", pointInd)
+//          //console.log("corner index is ", pointInd)
 //        if (pointInd < points.length){
             corners.push(localMinIndex + this.W);
-          console.log("1 corners are: ", corners)
+          //console.log("1 corners are: ", corners)
         }        
 //          var val = localMinIndex + this.W
-//          console.log("wrong value is: " + val)
+//          //console.log("wrong value is: " + val)
       //}
     }
-      console.log("------2 corners are: ", corners)
+      //console.log("------2 corners are: ", corners)
     // add the last point index
        corners.push((points.length - 1));  //
-      console.log("------3 corners are: ", corners)
+      //console.log("------3 corners are: ", corners)
       
-//    console.log("corners before sort are:")
-//    console.log(corners)  
+//    //console.log("corners before sort are:")
+//    //console.log(corners)  
 //    corners = corners.sort(function(a,b){return a-b;});  
-//    console.log("corners are:")
-//    console.log(corners.length)
-//    console.log(corners[2])
+//    //console.log("corners are:")
+//    //console.log(corners.length)
+//    //console.log(corners[2])
 //      
     corners = this.postProcessCorners(points, corners, straws);
     return corners;
@@ -103,14 +103,14 @@ var ShortStraw = {
       for (var i = 1; i < corners.length; i++) {
         // get the previous and current corner indices
         var c1 = corners[i - 1];
-          console.log("c1 is ", c1)
+          //console.log("c1 is ", c1)
           
         var c2 = corners[i];
-          console.log("c2 is ", c2)
-          console.log("corners are: ")
-          console.log(corners)
-//          console.log("points are: ")
-//          console.log(points)
+          //console.log("c2 is ", c2)
+          //console.log("corners are: ")
+          //console.log(corners)
+//          //console.log("points are: ")
+//          //console.log(points)
 
         // check if line is formed between previous and current corner indices
         var isLine = this.isLine(points, c1, c2);
@@ -121,7 +121,7 @@ var ShortStraw = {
         //----------ERROR IS HERE
           var newCorner = this.halfwayCorner(straws, c1, c2);
           newCorner = newCorner + this.W;
-            console.log("_____4 corners are:", newCorner)
+            //console.log("_____4 corners are:", newCorner)
 
           // skip adding new corner, since it already exists
           // can happen during an overzealous halfway corner calculation
@@ -130,20 +130,23 @@ var ShortStraw = {
           }
 
           corners.splice(i, 0, newCorner);
-            console.log("_____5 corners are:", corners)
+            //console.log("_____5 corners are:", corners)
           advance = false;
         }
       }
 
       // emergency stop
-      if (corners.length > 15) { console.log("WARNING: Infinite Loop"); break; }
+      if (corners.length > 15) { 
+        //console.log("WARNING: Infinite Loop");
+        break; 
+      }
     }
     // ----- end corner post-processing check #1 -----
 
      
     // ----- start corner post-processing check #2 -----
     for (var i = 1; i < corners.length - 1; i++) {
-        console.log("corners are : ", corners)
+        //console.log("corners are : ", corners)
       var c1 = corners[i - 1];
       var c2 = corners[i + 1];
 
@@ -163,20 +166,20 @@ var ShortStraw = {
 
     var subset = points.slice(a, b + 1);
       //if (subset.length === 0){return false;}
-      console.log("points are: ")
-      console.log(points)
-      console.log("subset is: ")
-      console.log(subset)
-      console.log("a is " + a)
-      console.log("b is " + b)
+      //console.log("points are: ")
+      //console.log(points)
+      //console.log("subset is: ")
+      //console.log(subset)
+      //console.log("a is " + a)
+      //console.log("b is " + b)
 
     var threshold = 0.95;
     var startPoint = points[a];
-      console.log("startpoint is: ")
-      console.log(startPoint)
+      //console.log("startpoint is: ")
+      //console.log(startPoint)
     var endPoint = points[b];
-      console.log("endpoint is: ")
-      console.log(endPoint)
+      //console.log("endpoint is: ")
+      //console.log(endPoint)
 
     var ax = startPoint.x;
     var ay = startPoint.y;

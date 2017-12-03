@@ -12,7 +12,7 @@ function initViewer() {
 	currentIndex = 0;
 	hasReadBefore = false;
 
-	load files at file input
+	//load files at file input
 	input = document.querySelector('input'); // access the <input> tag
 	input.addEventListener('change', loadFiles);
 
@@ -24,7 +24,7 @@ function initViewer() {
 
 	// initially disable all other buttons (until data is finally loaded later)
 	disableInputTagStates(true);
-    // 
+    
 }
 
 
@@ -33,56 +33,56 @@ function initViewer() {
 * Loads the file or files from the file open dialog window.
 * @param {Object} event The loading files event.
 */
-function loadFiles(event) {
-				var localSketches = JSON.parse(text);
+// function loadFiles(event) {
+// 				var localSketches = JSON.parse(text);
 	
-				// add the sketch to the general collection of contents 
-				for (var j = 0; j < localSketches.length; j++) {
-					var localSketch = localSketches[j];
-					sketches.push(localSketch);
-				}
+// 				// add the sketch to the general collection of contents 
+// 				for (var j = 0; j < localSketches.length; j++) {
+// 					var localSketch = localSketches[j];
+// 					sketches.push(localSketch);
+// 				}
 	
-				// check if file-reading has been done before after lodaing the files
-				if (!hasReadBefore) {
-					// 1. get the first sketch
-					// 2. display the first sketch
-					// 3. indicate that file reading has been done
-					var first = localSketches[0];
-					displaySketch(first, strokeColor);
+// 				// check if file-reading has been done before after lodaing the files
+// 				if (!hasReadBefore) {
+// 					// 1. get the first sketch
+// 					// 2. display the first sketch
+// 					// 3. indicate that file reading has been done
+// 					var first = localSketches[0];
+// 					displaySketch(first, strokeColor);
 
-					// enable the read-before flag
-					hasReadBefore = true;
-				}
+// 					// enable the read-before flag
+// 					hasReadBefore = true;
+// 				}
 
-				//
-				numReads++;
+// 				//
+// 				numReads++;
 	
-				if (numReads === numFiles) {
-					// enable all the buttons
-					if (sketches.length > 1) {
-						disableInputTagStates(false);
-						document.getElementById("backButton").disabled = true;;
-					}
-					else {
-						disableInputTagStates(true);
-					}
+// 				if (numReads === numFiles) {
+// 					// enable all the buttons
+// 					if (sketches.length > 1) {
+// 						disableInputTagStates(false);
+// 						document.getElementById("backButton").disabled = true;;
+// 					}
+// 					else {
+// 						disableInputTagStates(true);
+// 					}
 
-					//
-					currentIndex = 0;
-					updateIndexDisplay(currentIndex, sketches.length - 1);
+// 					//
+// 					currentIndex = 0;
+// 					updateIndexDisplay(currentIndex, sketches.length - 1);
 	
-					//
-					document.getElementById("sketchDataUploadsButton").value = "";
-				}
+// 					//
+// 					document.getElementById("sketchDataUploadsButton").value = "";
+// 				}
 	
-			};
-		})(file);
+// 			};
+// 		})(file);
 	
-		// read the current file
-		reader.readAsText(file);
-	}
+// 		// read the current file
+// 		reader.readAsText(file);
+// 	}
 
-}
+// }
 
 
 
