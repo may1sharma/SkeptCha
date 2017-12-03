@@ -8,16 +8,16 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 	<meta charset="UTF-8">
 	<title>SkeptCha: Login </title>
 	<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
-	<link rel="stylesheet" href="css/style.css">
-    <script type="text/javascript" src="drawCanvas.js"></script>
-    <script type="text/javascript" src="viewCanvas.js"></script>
-    <script type="text/javascript">
-        function start(){
-            initViewer()
-            initDrawing()
-            //
-        }
-    </script>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="text/javascript" src="drawCanvas.js"></script>
+  <script type="text/javascript" src="viewCanvas.js"></script>
+  <script type="text/javascript">
+      function start(){
+          loadViewer()
+          initDrawing()
+          //
+      }
+  </script>
 
   
 </head>
@@ -58,22 +58,104 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
 <script type="text/javascript">
 
-  	/**
-	 * Generates an RFC4122v4-compliant GUID
-	 *
-	 * @return {string} GUID
-	 */
-	var setId = function() {
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-			var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
-			return v.toString(16);
-		});
-	}
-    
-    function validateSkeptCha(){
-        console.log("sketch validated")
-        return true
+  var recognizing = "Dummy"; // Current interpretation of sketch
+
+  function loadViewer() {
+    // get the canvas and its context
+    viewCanvas = document.getElementById('viewCanvas');
+    if (viewCanvas.getContext) {
+      viewContext = viewCanvas.getContext('2d');
     }
+    var localSketch = readJson('sampleSketch.json')
+    console.log(localSketch)
+    displaySketch(localSketch[0],strokeColor)
+    recognizing = localSketch[0].shapes[0].interpretation;
+  }
+   
+  function validateSkeptCha() {
+    drawCanvas = document.getElementById('drawCanvas');
+
+    var sketch = getSkeptCha(drawCanvas, recognizing);
+    console.log(sketch);
+    if (!sketch) {
+      // Show Notification - Cannot validate empty sketch.. Please draw the given image.
+    }
+
+    //Select appropriate recognizer as per the interpretation being recognized
+
+
+    return true;
+  }
+
+
+
+  /**
+   * Retrieve the currently drawn sketch from the canvas without clearing it
+   * @param {Object} canvas - The draw canvas.
+   */
+  function getSkeptCha(canvas, interpretation) {
+    // get the sketch's strokes and validate
+    var strokes = DrawCanvasData.strokes;
+    if (strokes.length == 0){
+      // console.log("Cannot validate empty sketch. Please draw the given image.");
+      return;
+    }
+    
+    // get the sketch's interpretation 
+    if (interpretation === "") {
+      interpretation = "none";
+    }
+
+    // get the sketch's domain(s) 
+    var domainString = "SkeptCha";
+
+    // parse the domains into an array
+    var domainString = domainString.replace(/ /g, ''); // removes whitespace
+    var domain = domainString.split(",");
+
+    
+    // Set up sketch object
+    var id = generateUuidv4();
+
+    // get the sketch's first time
+    var firstTime = strokes[0].points[0].time;
+
+    // create the sketch's shapes object
+    var shape = {};
+    shape.subElements = [];
+    for (var i = 0; i < strokes.length; i++) {
+      var stroke = strokes[i];
+      shape.subElements.push(stroke.id);
+    }
+    shape.time = firstTime;
+    shape.interpretation = interpretation;
+    shape.confidence = "0.0";
+
+    // id, time, domain, strokes, shapes
+    var sketch = {};
+    sketch.id = id;
+    sketch.time = firstTime;
+    sketch.domain =  domainString.split(",");;
+    sketch.canvasWidth = Number.parseInt(canvas.width);;
+    sketch.canvasHeight = Number.parseInt(canvas.height);;
+    sketch.strokes = strokes;
+    sketch.shapes = [shape];
+
+    return sketch;
+  }
+
+  function readJson(fileName) {
+    var contents;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        contents = JSON.parse(this.response);
+      }
+    };
+    xhttp.open("GET", fileName, false);
+    xhttp.send();
+    return contents;
+  }    
     
 </script>
   

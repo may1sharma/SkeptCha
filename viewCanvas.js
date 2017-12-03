@@ -8,13 +8,13 @@
 function initViewer() {
 
 	// initialize the sketch collection and current index
-//	sketch = [];
-//	currentIndex = 0;
-//	hasReadBefore = false;
+	sketch = [];
+	currentIndex = 0;
+	hasReadBefore = false;
 
-	// load files at file input
-//	input = document.querySelector('input'); // access the <input> tag
-//	input.addEventListener('change', loadFiles);
+	load files at file input
+	input = document.querySelector('input'); // access the <input> tag
+	input.addEventListener('change', loadFiles);
 
 	// get the canvas and its context
 	viewCanvas = document.getElementById('viewCanvas');
@@ -22,81 +22,68 @@ function initViewer() {
 		viewContext = viewCanvas.getContext('2d');
 	}
 
-//	// initially disable all other buttons (until data is finally loaded later)
-//	disableInputTagStates(true);
-    var localSketch = readJson('sampleSketch.json')
-    console.log(localSketch)
-    displaySketch(localSketch[0],strokeColor)
+	// initially disable all other buttons (until data is finally loaded later)
+	disableInputTagStates(true);
+    // 
 }
 
-function readJson(fileName) {
-       var contents;
-       var xhttp = new XMLHttpRequest();
-       xhttp.onreadystatechange = function() {
-          if (this.readyState === 4 && this.status === 200) {
-             contents = JSON.parse(this.response);
-        }
-       };
-       xhttp.open("GET", fileName, false);
-       xhttp.send();
-       return contents;
-    }    
 
-///**
-// * Loads the file or files from the file open dialog window.
-// * @param {Object} event The loading files event.
-// */
-//function loadFiles(event) {
-//				var localSketches = JSON.parse(text);
-//	
-//				// add the sketch to the general collection of contents 
-//				for (var j = 0; j < localSketches.length; j++) {
-//					var localSketch = localSketches[j];
-//					sketches.push(localSketch);
-//				}
-//	
-//				// check if file-reading has been done before after lodaing the files
-//				if (!hasReadBefore) {
-//					// 1. get the first sketch
-//					// 2. display the first sketch
-//					// 3. indicate that file reading has been done
-//					var first = localSketches[0];
-//					displaySketch(first, strokeColor);
-//
-//					// enable the read-before flag
-//					hasReadBefore = true;
-//				}
-//
-//				//
-//				numReads++;
-//	
-//				if (numReads === numFiles) {
-//					// enable all the buttons
-//					if (sketches.length > 1) {
-//						disableInputTagStates(false);
-//						document.getElementById("backButton").disabled = true;;
-//					}
-//					else {
-//						disableInputTagStates(true);
-//					}
-//
-//					//
-//					currentIndex = 0;
-//					updateIndexDisplay(currentIndex, sketches.length - 1);
-//	
-//					//
-//					document.getElementById("sketchDataUploadsButton").value = "";
-//				}
-//	
-//			};
-//		})(file);
-//	
-//		// read the current file
-//		reader.readAsText(file);
-//	}
-//
-//}
-//
+
+/**
+* Loads the file or files from the file open dialog window.
+* @param {Object} event The loading files event.
+*/
+function loadFiles(event) {
+				var localSketches = JSON.parse(text);
+	
+				// add the sketch to the general collection of contents 
+				for (var j = 0; j < localSketches.length; j++) {
+					var localSketch = localSketches[j];
+					sketches.push(localSketch);
+				}
+	
+				// check if file-reading has been done before after lodaing the files
+				if (!hasReadBefore) {
+					// 1. get the first sketch
+					// 2. display the first sketch
+					// 3. indicate that file reading has been done
+					var first = localSketches[0];
+					displaySketch(first, strokeColor);
+
+					// enable the read-before flag
+					hasReadBefore = true;
+				}
+
+				//
+				numReads++;
+	
+				if (numReads === numFiles) {
+					// enable all the buttons
+					if (sketches.length > 1) {
+						disableInputTagStates(false);
+						document.getElementById("backButton").disabled = true;;
+					}
+					else {
+						disableInputTagStates(true);
+					}
+
+					//
+					currentIndex = 0;
+					updateIndexDisplay(currentIndex, sketches.length - 1);
+	
+					//
+					document.getElementById("sketchDataUploadsButton").value = "";
+				}
+	
+			};
+		})(file);
+	
+		// read the current file
+		reader.readAsText(file);
+	}
+
+}
+
 
 
 // ##########################
