@@ -80,19 +80,29 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     drawCanvas = document.getElementById('drawCanvas');
 
     var sketch = getSkeptCha(drawCanvas, recognizing);
-    console.log(sketch);
+    // console.log(sketch);
     if (!sketch) {
       // Show Notification - Cannot validate empty sketch.. Please draw the given image.
     }
 
-    var resampledSketch = SketchRecTools.resampleByDistance(sketch, );
+    var SamplingDist = SketchRecTools.determineResampleSpacing(sketch);
+    var resampledSketch = SketchRecTools.resampleByDistance(sketch, SamplingDist);
+    console.log("Resampled Sketch");
+    console.log(resampledSketch);
+
     var result = false;
     
     //Select appropriate recognizer as per the interpretation being recognized
 
-    result = TriangleRecognizer.validate(resampledSketch);
+    result = TriangleRecognizer.validate(resampledSketch, SamplingDist);
 
 
+    if(result) {
+      console.log("SkeptCha Validation Pass");
+    } else {
+
+      console.log("SkeptCha Validation Fail");
+    }
     return result;
   }
 
