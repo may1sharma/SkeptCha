@@ -5,84 +5,114 @@
 /**
  * Initializes the body at start.
  */
-function initViewer() {
+function init() {
 
 	// initialize the sketch collection and current index
 	sketch = [];
 	currentIndex = 0;
 	hasReadBefore = false;
 
-	//load files at file input
+	// load files at file input
 	input = document.querySelector('input'); // access the <input> tag
 	input.addEventListener('change', loadFiles);
 
 	// get the canvas and its context
-	viewCanvas = document.getElementById('viewCanvas');
-	if (viewCanvas.getContext) {
-		viewContext = viewCanvas.getContext('2d');
+	drawCanvas = document.getElementById('drawCanvas');
+	if (drawCanvas.getContext) {
+		drawContext = drawCanvas.getContext('2d');
 	}
 
 	// initially disable all other buttons (until data is finally loaded later)
 	disableInputTagStates(true);
-    
 }
 
-
-
 /**
-* Loads the file or files from the file open dialog window.
-* @param {Object} event The loading files event.
-*/
-// function loadFiles(event) {
-// 				var localSketches = JSON.parse(text);
-	
-// 				// add the sketch to the general collection of contents 
-// 				for (var j = 0; j < localSketches.length; j++) {
-// 					var localSketch = localSketches[j];
-// 					sketches.push(localSketch);
-// 				}
-	
-// 				// check if file-reading has been done before after lodaing the files
-// 				if (!hasReadBefore) {
-// 					// 1. get the first sketch
-// 					// 2. display the first sketch
-// 					// 3. indicate that file reading has been done
-// 					var first = localSketches[0];
-// 					displaySketch(first, strokeColor);
+ * Loads the file or files from the file open dialog window.
+ * @param {Object} event The loading files event.
+ */
+function loadFiles(event) {
 
-// 					// enable the read-before flag
-// 					hasReadBefore = true;
-// 				}
+		// display loading message
+		document.getElementById("indexDisplay").innerHTML = "Waiting for sketches to be loaded...";
+	
+		// initially disable the buttons
+		disableInputTagStates(true);
+		
+		// get the files that were selected from the <input> tag's file open dialog window
+		var files = event.target.files;
+				
+		// no file or files selected => quit function
+		if (files.length === 0) { alert("Failed to load files"); }
+	
+		// initialze the repsective counts and flag
+		numReads = 0;
+		numFiles = files.length;
+		hasReadBefore = false;
+	
+		// collet the sketches from the file or files
+		sketches = [];
+		for (var i = 0; i < files.length; i++) {
 
-// 				//
-// 				numReads++;
+			// get the current file
+			var file = files[i];
 	
-// 				if (numReads === numFiles) {
-// 					// enable all the buttons
-// 					if (sketches.length > 1) {
-// 						disableInputTagStates(false);
-// 						document.getElementById("backButton").disabled = true;;
-// 					}
-// 					else {
-// 						disableInputTagStates(true);
-// 					}
+			// set up the reader once it is ready to load the file
+			// note: closure is used to ensure that code is processed in-line
+			var reader = new FileReader();
+			reader.onload = ( function(file) {
+				return function(e) {
 
-// 					//
-// 					currentIndex = 0;
-// 					updateIndexDisplay(currentIndex, sketches.length - 1);
+				// get the curent local sketch
+				var text = e.target.result;
+				var localSketches = JSON.parse(text);
 	
-// 					//
-// 					document.getElementById("sketchDataUploadsButton").value = "";
-// 				}
+				// add the sketch to the general collection of contents 
+				for (var j = 0; j < localSketches.length; j++) {
+					var localSketch = localSketches[j];
+					sketches.push(localSketch);
+				}
 	
-// 			};
-// 		})(file);
-	
-// 		// read the current file
-// 		reader.readAsText(file);
-// 	}
+				// check if file-reading has been done before after lodaing the files
+				if (!hasReadBefore) {
+					// 1. get the first sketch
+					// 2. display the first sketch
+					// 3. indicate that file reading has been done
+					var first = localSketches[0];
+					displaySketch(first, strokeColor);
 
-// }
+					// enable the read-before flag
+					hasReadBefore = true;
+				}
+
+				//
+				numReads++;
+	
+				if (numReads === numFiles) {
+					// enable all the buttons
+					if (sketches.length > 1) {
+						disableInputTagStates(false);
+						document.getElementById("backButton").disabled = true;;
+					}
+					else {
+						disableInputTagStates(true);
+					}
+
+					//
+					currentIndex = 0;
+					updateIndexDisplay(currentIndex, sketches.length - 1);
+	
+					//
+					document.getElementById("sketchDataUploadsButton").value = "";
+				}
+	
+			};
+		})(file);
+	
+		// read the current file
+		reader.readAsText(file);
+	}
+
+}
 
 
 
@@ -96,15 +126,14 @@ function initViewer() {
  * @param {String} color - The sketch's stroke colors.
  */
 function displaySketch(sketch, color) {
-    console.log(sketch.strokes)
 	//
 	var originalColor = this.strokeColor;					// save original color
 	strokeColor = color;								// change color
-	viewContext.fillStyle = color;
+	drawContext.fillStyle = color;
 
 	//
-	viewCanvas.width = sketch.canvasWidth;
-	viewCanvas.height = sketch.canvasHeight;
+	drawCanvas.width = sketch.canvasWidth;
+	drawCanvas.height = sketch.canvasHeight;
 
 	// iterate through each stroke
 	var strokes = sketch.strokes;
@@ -116,11 +145,38 @@ function displaySketch(sketch, color) {
 
 			var currPoint = points[j];
 			var nextPoint = points[j + 1];
-			drawLineSegment(viewContext, currPoint.x, currPoint.y, nextPoint.x, nextPoint.y, strokeColor, strokeSize);
+			drawLineSegment(drawContext, currPoint.x, currPoint.y, nextPoint.x, nextPoint.y, strokeColor, strokeSize);
 		}
 	}
 	strokeColor = originalColor;						// revert color
-	viewContext.fillStyle = strokeColor;
+	drawContext.fillStyle = strokeColor;
+}
+
+function displaySketchInContext(sketch, color, context) {
+	//
+	var originalColor = this.strokeColor;					// save original color
+	strokeColor = color;								// change color
+	context.fillStyle = color;
+
+	//
+	//drawCanvas.width = sketch.canvasWidth;
+	//drawCanvas.height = sketch.canvasHeight;
+
+	// iterate through each stroke
+	var strokes = sketch.strokes;
+	for (var i = 0; i < strokes.length; i++) {
+		var points = strokes[i].points;
+
+		// iterate through each point in the stroke
+		for (var j = 0; j < points.length - 1; j++) {
+
+			var currPoint = points[j];
+			var nextPoint = points[j + 1];
+			drawLineSegment(context, currPoint.x, currPoint.y, nextPoint.x, nextPoint.y, strokeColor, strokeSize);
+		}
+	}
+	strokeColor = originalColor;						// revert color
+	context.fillStyle = strokeColor;
 }
 
 /**
@@ -299,8 +355,8 @@ function clearCanvas(canvas, context) {
 // ##########
 
 //  Accesses the canvas and its information.
-var viewCanvas;
-var viewContext;
+var drawCanvas;
+var drawContext;
 
 // Keeps track of the sketches and index of the currently-viewed sketch. 
 var sketches;
