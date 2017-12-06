@@ -1,0 +1,24 @@
+{
+  "name": "skeptcha",
+  "version": "1.0.0",
+  "description": "Sketch based CaptCha verification",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.tamu.edu/mayank-sharma/SkeptCha"
+  },
+  "keywords": [
+    "Sketch",
+    "Recognition",
+    "SkeptCha"
+  ],
+  "author": "Mayank Sharma",
+  "license": "ISC",
+  "dependencies": {
+    "express": "*"
+  }
+}

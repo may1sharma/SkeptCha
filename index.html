@@ -61,6 +61,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
 
   var recognizing = "Dummy"; // Current interpretation of sketch
+  var indexFile;  // File Storing Sketch Ids for a particular Interpretation
 
   function loadSkeptCha() {
     // get the canvas and its context
@@ -68,11 +69,24 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     if (viewCanvas.getContext) {
       viewContext = viewCanvas.getContext('2d');
     }
-    var localSketch = readJson('sampleSketch.json')
+    var localSketch = readJson('Data/defaultSketch.json')
+
+    // TODO Select Random Interpretation
+
+
+    indexFile = readJson('Data/Triangle.json');
+    // console.log(indexFile);
+
+    var localId = indexFile[Math.floor(indexFile.length * Math.random())];
+    // console.log(localId);
+    if (localId) {
+        localSketch = readJson('Data/Sketch_Triangle/' + localId + '.json');
+    }
+
     console.log("Loaded sketch:")
     console.log(localSketch)
-    displaySketchInContext(localSketch[0],strokeColor, viewContext)
-    recognizing = localSketch[0].shapes[0].interpretation;
+    displaySketchInContext(localSketch,strokeColor, viewContext)
+    recognizing = localSketch.shapes[0].interpretation;
   }
 
    
@@ -99,9 +113,10 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
     if(result) {
       console.log("SkeptCha Validation Pass");
+      saveSketch(sketch);
     } else {
-
       console.log("SkeptCha Validation Fail");
+      //TODO reduce confidence level of displayed sketch and save the drawn sketch to otherSketches folder
     }
     return result;
   }
@@ -148,7 +163,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     }
     shape.time = firstTime;
     shape.interpretation = interpretation;
-    shape.confidence = "0.0";
+    shape.confidence = "1.0";
 
     // id, time, domain, strokes, shapes
     var sketch = {};
@@ -177,7 +192,11 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
   }    
 
   function saveSketch(sketch) {
-    
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:3000/saveSkeptCha", false);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    var data = JSON.stringify(sketch);
+    xhr.send(data);
   }
     
 </script>
