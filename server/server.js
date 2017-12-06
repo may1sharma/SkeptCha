@@ -22,10 +22,24 @@ app.post("/saveSkeptCha", function(req, res){
     var sketch = JSON.parse(JSON.stringify(req.body));
     // console.info(sketch);
 
-    var name = '../Data/Sketch_Triangle/' + sketch.id + '.json';
+    var fname;
+    var indexfname;
+
+    switch(sketch.shapes[0].interpretation) {
+    	case "Triangle":
+    	    fname = '../Data/Sketch_Triangle/' + sketch.id + '.json';
+    	    indexfname = require('../Data/Triangle.json');
+    	    break;
+    	    
+    	case "none":
+    	default:
+    		fname = '../Data/Others/' + sketch.id + '.json';
+    	    indexfname = require('../Data/Others.json');
+    }
+
 
     //write the file
-    fs.writeFile(name, JSON.stringify(req.body), 
+    fs.writeFile(fname, JSON.stringify(req.body), 
     function(err){
         if(err){
             console.error(err); //print out the error in case there is one
@@ -33,13 +47,12 @@ app.post("/saveSkeptCha", function(req, res){
         }
 
         //resolve the request with the client
-        console.info("Added sketch " + name + " to Database");
+        console.info("Added sketch " + fname + " to Database");
         res.send();
     });
 
     // Append entry to corresponding index File
-    var fname = require('../Data/Triangle.json');
-    var indexFile = JSON.parse(JSON.stringify(fname));
+    var indexFile = JSON.parse(JSON.stringify(indexfname));
     // console.info(indexFile);
     indexFile.push(sketch.id);
     fs.writeFile('../Data/Triangle.json', JSON.stringify(indexFile),  function(err) {

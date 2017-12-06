@@ -69,18 +69,23 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     if (viewCanvas.getContext) {
       viewContext = viewCanvas.getContext('2d');
     }
-    var localSketch = readJson('Data/defaultSketch.json')
+    var localSketch = readJson('Data/Others/defaultSketch.json')
 
-    // TODO Select Random Interpretation
+    // Select Random Interpretation
+    var totalInterpretations = 1;
+    var choose = Math.floor(totalInterpretations * Math.random());
 
+    switch(choose) {
+      case 0:
+      default:      // Triangle
+          indexFile = readJson('Data/Triangle.json');
+          // console.log(indexFile);
 
-    indexFile = readJson('Data/Triangle.json');
-    // console.log(indexFile);
-
-    var localId = indexFile[Math.floor(indexFile.length * Math.random())];
-    // console.log(localId);
-    if (localId) {
-        localSketch = readJson('Data/Sketch_Triangle/' + localId + '.json');
+          var localId = indexFile[Math.floor(indexFile.length * Math.random())];
+          // console.log(localId);
+          if (localId) {
+              localSketch = readJson('Data/Sketch_Triangle/' + localId + '.json');
+          }
     }
 
     console.log("Loaded sketch:")
