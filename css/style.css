@@ -1,6 +1,8 @@
+/*
 body {
-  background: #eee !important;
+  background: "wallpaper.jpg" !important;
 }
+*/
 
 .wrapper {
   margin-top: 80px;
@@ -71,12 +73,11 @@ body {
     position:relative; /* Necessary for correct mouse co-ords in Firefox */
 }
 
-.elementlook {
-
-    -webkit-appearance: none;
-    background: #eee;
-    border: 1px solid #888;
+#btn {
     margin: 5px;
+    padding: 2px;
+    margin-bottom: 20px;
+    margin-right: 0px; 
 }
 .otherlook {
     padding: 10px;
