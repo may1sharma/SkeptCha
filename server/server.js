@@ -35,6 +35,7 @@ app.post("/saveSkeptCha", function(req, res){
     	default:
     		fname = '../Data/Others/' + sketch.id + '.json';
     	    indexfname = require('../Data/Others.json');
+    	    break;
     }
 
 

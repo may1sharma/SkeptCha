@@ -39,13 +39,13 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     </div>
         <!-- Buttons Section -->
     <div>
-      <input type="submit" value="Clear" class="btn btn-sm btn-default" id="btn" onclick="clearButton(drawCanvas, drawContext);">
-      <input type="submit" value="Undo" class="btn btn-sm btn-default" id="btn" onclick="undoButton(drawCanvas, drawContext);">
-    <input type="submit" value="reCaptCha" class="btn btn-sm btn-default" id="btn" onclick="start()">
-      <input type="submit" value="Validate" class="btn btn-sm btn-default" id="btn" onclick="validateSkeptCha()">
+      <input type="button" value="Clear" class="btn btn-sm btn-default" id="btn" onclick="clearButton(drawCanvas, drawContext);">
+      <input type="button" value="Undo" class="btn btn-sm btn-default" id="btn" onclick="undoButton(drawCanvas, drawContext);">
+    <input type="button" value="reCaptCha" class="btn btn-sm btn-default" id="btn" onclick="start()">
+      <input type="button" value="Validate" class="btn btn-sm btn-default" id="btn" onclick="validateSkeptCha()">
     </div>
 
-	  <button class="btn btn-lg btn-primary btn-block" type="submit" id="loginButton" disabled onclick="login()">Login</button>   
+	  <button class="btn btn-lg btn-primary btn-block" type="button" id="loginButton" disabled onclick="login()">Login</button>   
 	</form>
 	</div>
     
@@ -126,15 +126,17 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
     if(result) {
       console.log("SkeptCha Validation Pass");
-    document.getElementById("loginButton").disabled = false;
+      document.getElementById("loginButton").disabled = false;
       saveSketch(sketch);
     } else {
-    document.getElementById("failureNotice").innerHTML = "SkeptCha validation fail :( Please try again...";
-    console.log("SkeptCha Validation Fail");
-    clearCanvas(drawCanvas,drawContext)
-    start()
-        
+
       //TODO reduce confidence level of displayed sketch and save the drawn sketch to otherSketches folder
+
+      document.getElementById("failureNotice").innerHTML = "SkeptCha validation fail :( Please try again...";
+      console.log("SkeptCha Validation Fail");
+      clearCanvas(drawCanvas,drawContext)
+      start()
+        
     }
     return result;
   }
@@ -217,9 +219,9 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     xhr.send(data);
   }
     
-    function login(){
-        window.location.href = "success.html";
-    }
+  function login(){
+      window.location.href = "success.html";
+  }
     
 </script>
   
