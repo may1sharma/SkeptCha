@@ -13,6 +13,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
   <script type="text/javascript" src="sketchDebugger.js"></script>
   <script type="text/javascript" src="SketchRecTools.js"></script>
   <script type="text/javascript" src="shortStraw.js"></script>
+  <!-- <script type="text/javascript" src="pdollar.js"></script> -->
   <script type="text/javascript" src="triangleRecognizer.js"></script>
   
 </head>
@@ -64,6 +65,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
   var recognizing = "Dummy"; // Current interpretation of sketch
   var indexFile;  // File Storing Sketch Ids for a particular Interpretation
+  var localSketch = readJson('Data/Others/defaultSketch.json');
 
   function loadSkeptCha() {
       
@@ -74,7 +76,6 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     }
     
     clearCanvas(viewCanvas, viewContext);
-    var localSketch = readJson('Data/Others/defaultSketch.json')
 
     // Select Random Interpretation
     var totalInterpretations = 1;
@@ -111,6 +112,10 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     if (!sketch) {
       // Show Notification - Cannot validate empty sketch.. Please draw the given image.
     }
+
+    // Template Matching
+    var matching = matchSkeptCha(sketch, localSketch);
+
 
     var SamplingDist = SketchRecTools.determineResampleSpacing(sketch);
     var resampledSketch = SketchRecTools.resampleByDistance(sketch, SamplingDist);
@@ -196,6 +201,91 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     sketch.shapes = [shape];
 
     return sketch;
+  }
+
+  var NumPoints = 32;
+  var Origin = {x: 0, y: 0};
+
+  // Template Matching using P-dollar algorithm
+  function matchSkeptCha(sketch, template) {
+    sketch = SketchRecTools.resampleByCount(sketch, NumPoints);
+    template = SketchRecTools.resampleByCount(template, NumPoints);
+
+    sketch =  SketchRecTools.scaleProportional(sketch, 200);
+    template = SketchRecTools.scaleProportional(template, 200);
+
+    sketch = SketchRecTools.translateToPoint(sketch, Origin);
+    template = SketchRecTools.translateToPoint(template, Origin);
+
+    var pointsA = [];
+    var pointsB = [];
+
+    for (var i=0; i< sketch.strokes.length; i++) {
+      pointsA.push.apply(pointsA, sketch.strokes[i].points);
+    }
+    for (var i=0; i< template.strokes.length; i++) {
+      pointsB.push.apply(pointsB, template.strokes[i].points);
+    }
+    console.log("pointsA", pointsA);
+    console.log("pointsB", pointsB);
+
+    var diffLen = pointsA.length - pointsB.length;
+    // console.log(pointsA.length);
+    // console.log(pointsB.length);
+    // console.log(diffLen);
+
+    if (diffLen > 0) {
+      pointsA.splice(-1*diffLen, diffLen);
+    } else if (diffLen < 0) {
+      pointsB.splice(diffLen, -1*diffLen);
+    }
+    // console.log("pointsA", pointsA);
+    // console.log("pointsB", pointsB);
+
+    var score = GreedyCloudMatch(pointsA, pointsB);
+    console.log("Matching Score", score);
+    return score;
+  }
+
+  function GreedyCloudMatch(pointsA, pointsB)
+  {
+    var e = 0.50;
+    var step = Math.floor(Math.pow(pointsA.length, 1 - e));
+    var min = +Infinity;
+    for (var i = 0; i < pointsA.length; i += step) {
+      var d1 = CloudDistance(pointsA, pointsB, i);
+      var d2 = CloudDistance(pointsB, pointsA, i);
+      min = Math.min(min, Math.min(d1, d2)); // min3
+    }
+    return min;
+  }
+  function CloudDistance(pts1, pts2, start)
+  {
+    var matched = new Array(pts1.length); // pts1.length == pts2.length
+    for (var k = 0; k < pts1.length; k++)
+      matched[k] = false;
+    var sum = 0;
+    var i = start;
+    do
+    {
+      var index = -1;
+      var min = +Infinity;
+      for (var j = 0; j < matched.length; j++)
+      {
+        if (!matched[j]) {
+          var d = SketchRecTools.calculateDistance(pts1[i].x, pts1[i].y, pts2[j].x, pts2[j].y);
+          if (d < min) {
+            min = d;
+            index = j;
+          }
+        }
+      }
+      matched[index] = true;
+      var weight = 1 - ((i - start + pts1.length) % pts1.length) / pts1.length;
+      sum += weight * min;
+      i = (i + 1) % pts1.length;
+    } while (i != start);
+    return sum;
   }
 
   function readJson(fileName) {
