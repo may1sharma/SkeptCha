@@ -96,7 +96,15 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
     console.log("Loaded sketch:")
     console.log(localSketch)
-    displaySketchInContext(localSketch,strokeColor, viewContext)
+
+    // Add Backgroung image and display sketch
+    var ref_image = new Image();  
+    ref_image.src = 'Data/background/bkgRef'+ Math.floor(5 * Math.random()) +'.jpg';  
+    ref_image.onload = function() {    
+      viewContext.drawImage(ref_image, 0, 0);  
+      displaySketchInContext(localSketch, strokeColor, viewContext)
+    };
+
     recognizing = localSketch.shapes[0].interpretation;
     log("New SkeptCha Loaded");
     // Start calculating response time
