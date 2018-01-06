@@ -56,7 +56,6 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 <script type="text/javascript">
 
   function start(){
-      //document.getElementById()
       loadSkeptCha();
       initDrawing();
       //
@@ -66,6 +65,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
   var recognizing = "Dummy"; // Current interpretation of sketch
   var indexFile;  // File Storing Sketch Ids for a particular Interpretation
   var localSketch = readJson('Data/Others/defaultSketch.json');
+  var responseTime = 0;
 
   function loadSkeptCha() {
       
@@ -98,10 +98,16 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     console.log(localSketch)
     displaySketchInContext(localSketch,strokeColor, viewContext)
     recognizing = localSketch.shapes[0].interpretation;
+    log("New SkeptCha Loaded");
+    // Start calculating response time
+    responseTime = Date.now();
   }
 
    
   function validateSkeptCha() {
+    responseTime = Date.now() - responseTime;
+    log("SkeptCha Validation requested: User Response Time  " + responseTime + " ms.");
+
     drawCanvas = document.getElementById('drawCanvas');
     if (drawCanvas.getContext) {
       drawContext = drawCanvas.getContext('2d');
@@ -131,6 +137,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
     if(result) {
       console.log("SkeptCha Validation Pass");
+      log("SkeptCha Validation Pass");
       document.getElementById("loginButton").disabled = false;
       saveSketch(sketch);
     } else {
@@ -139,6 +146,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
       document.getElementById("failureNotice").innerHTML = "SkeptCha validation fail :( Please try again...";
       console.log("SkeptCha Validation Fail");
+      log("SkeptCha Validation Fail");
       clearCanvas(drawCanvas,drawContext)
       start()
         
@@ -307,9 +315,17 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
     var data = JSON.stringify(sketch);
     xhr.send(data);
+  }   
+
+  function log(event) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:3000/log", false);
+    xhr.setRequestHeader("Content-Type", "text/plain; charset=UTF-8");    
+    xhr.send(event);
   }
     
   function login(){
+      log("User Logged in to the system");
       window.location.href = "success.html";
   }
     

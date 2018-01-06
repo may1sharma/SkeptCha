@@ -53,7 +53,7 @@ function initDrawing() {
 function clearButton(canvas, context) {
   // clear the canvas
   clearCanvas(canvas, context);
-
+  log("Clear Button Clicked: Canvas Cleared");
   // reset the draw canvas' points and strokes
   DrawCanvasData.points = [];
   DrawCanvasData.strokes = [];
@@ -73,6 +73,7 @@ function undoButton(canvas, context) {
   
   // re-draw the remaining strokes
   redraw(canvas, context, DrawCanvasData.strokes, strokeColor, strokeSize);
+  log("Undo Button Clicked: Last Stroke Removed");
 }
 
 /**

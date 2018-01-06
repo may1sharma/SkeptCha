@@ -15,6 +15,16 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(function(req, res, next){
+  if (req.is('text/*')) {
+    req.text = '';
+    req.setEncoding('utf8');
+    req.on('data', function(chunk){ req.text += chunk });
+    req.on('end', next);
+  } else {
+    next();
+  }
+});
 
 app.post("/saveSkeptCha", function(req, res){
     console.info("Submitting POST Request to Server");
@@ -63,6 +73,20 @@ app.post("/saveSkeptCha", function(req, res){
         }
     });
     delete require.cache[require.resolve('../Data/Triangle.json')];
+})
+
+
+app.post("/log", function(req, res){
+    var fname = 'logs.txt';
+    var dt = new Date();
+    // console.log(req.text);
+    fs.appendFile(fname, dt.toUTCString() + '     ' + dt.getTime() + '     ' + req.text + '\n',  function(err) {
+        if(err) {
+            console.error(err); //print out the error in case there is one
+            return res.status(500).json(err);
+        }
+        res.send();
+    });
 })
 
 app.listen(3000, function() {
