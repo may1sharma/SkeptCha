@@ -29,7 +29,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 	    <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
 	  </label>
     <div>
-        <p id="failureNotice">Please draw the given image :)</p> 
+        <p id="failureNotice">Please draw the given shape :)</p> 
     </div>
      <div>
       <canvas id="drawCanvas" class="canvaslook" width="200" height="200" ></canvas>
@@ -58,14 +58,13 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
   function start(){
       loadSkeptCha();
       initDrawing();
-      //
   }
 
 
   var recognizing = "Dummy"; // Current interpretation of sketch
   var indexFile;  // File Storing Sketch Ids for a particular Interpretation
   var localSketch = readJson('Data/Others/defaultSketch.json');
-  var responseTime = 0;
+  var responseTime = Date.now();
 
   function loadSkeptCha() {
       
@@ -155,7 +154,6 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
       document.getElementById("failureNotice").innerHTML = "SkeptCha validation fail :( Please try again...";
       console.log("SkeptCha Validation Fail");
       log("SkeptCha Validation Fail");
-      clearCanvas(drawCanvas,drawContext)
       start()
         
     }

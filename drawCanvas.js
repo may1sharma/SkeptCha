@@ -16,7 +16,7 @@ function initDrawing() {
     // get the draw canvas dimensions
     width = this.drawCanvas.width;
 		height = this.drawCanvas.height;
-    clearCanvas(drawCanvas, drawContext)
+    clearButton(drawCanvas, drawContext)
 
     // auto-fill the dimensions input from the canvas' current dimensions
 //    document.getElementById("widthInput").value = width;
