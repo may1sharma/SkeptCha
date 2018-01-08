@@ -42,7 +42,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     <div>
       <input type="button" value="Clear" class="btn btn-sm btn-default" id="btn" onclick="clearButton(drawCanvas, drawContext);">
       <input type="button" value="Undo" class="btn btn-sm btn-default" id="btn" onclick="undoButton(drawCanvas, drawContext);">
-    <input type="button" value="reCaptCha" class="btn btn-sm btn-default" id="btn" onclick="start()">
+    <input type="button" value="reSkeptCha" class="btn btn-sm btn-default" id="btn" onclick="start()">
       <input type="button" value="Validate" class="btn btn-sm btn-default" id="btn" onclick="validateSkeptCha()">
     </div>
 
@@ -58,6 +58,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
   function start(){
       loadSkeptCha();
       initDrawing();
+      document.getElementById("loginButton").disabled = true;
   }
 
 
@@ -128,6 +129,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
     // Template Matching
     var matching = matchSkeptCha(sketch, localSketch);
+    log("Matching Score: " + matching);
 
 
     var SamplingDist = SketchRecTools.determineResampleSpacing(sketch);
@@ -141,8 +143,8 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
 
     result = TriangleRecognizer.validate(resampledSketch, SamplingDist);
 
-
-    if(result) {
+    // ToDo Add response Time as a metric
+    if(result || (150 < matching && matching < 550)) {
       console.log("SkeptCha Validation Pass");
       log("SkeptCha Validation Pass");
       document.getElementById("loginButton").disabled = false;
@@ -217,7 +219,7 @@ Using default Bootstrap 3.0, here's a short CSS snippet to style your login form
     return sketch;
   }
 
-  var NumPoints = 32;
+  var NumPoints = 100;
   var Origin = {x: 0, y: 0};
 
   // Template Matching using P-dollar algorithm
